@@ -1113,7 +1113,7 @@ export default function App() {
   useEffect(() => {
     if (user && screen === "login") setScreen("notif-permission");
     if (!user && !loading)          setScreen("login");
-  }, [user, loading]);
+  }, [user, loading, screen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (notifPermission === "granted") scheduleAllNotifs(medications, notifMinutes);
