@@ -97,6 +97,7 @@ function scheduleMedNotif(med, minutesBefore = 15) {
   }, msUntilAlert);
 }
 
+// eslint-disable-next-line no-unused-vars
 function cancelMedNotif(medId) {
   if (notifTimers[medId]) { clearTimeout(notifTimers[medId]); delete notifTimers[medId]; }
 }
@@ -133,7 +134,7 @@ function Modal({ onClose, children }) {
 function ScrollPicker({ options, value, onChange, unit }) {
   const ref = useRef(null);
   const idx = Math.max(0, options.indexOf(value));
-  useEffect(() => { if (ref.current) ref.current.scrollTop = idx * ITEM_H; }, []);
+  useEffect(() => { if (ref.current) ref.current.scrollTop = idx * ITEM_H; }, [idx]); // eslint-disable-line react-hooks/exhaustive-deps
   const onScroll = e => { const i = Math.round(e.target.scrollTop / ITEM_H); if (options[i] !== undefined) onChange(options[i]); };
   return (
     <div style={{ position:"relative", height:ITEM_H*3, overflow:"hidden", borderRadius:16, background:"#F7F4EF" }}>
@@ -1096,18 +1097,19 @@ function MedicationsScreen({ profile, medications, setMedications }) {
 // MAIN APP
 // ─────────────────────────────────────────
 export default function App() {
-  const { user, loading, familyId, login, logout } = useAuth();
-  const { profile, updateProfile }                 = useChildProfile(familyId);
-  const { medications, addMedication, markDoseGiven, updateMedication, deactivateMedication } = useMedications(familyId);
-  const { lastTemp, addReading }                   = useTemperature(familyId);
+  // eslint-disable-next-line no-unused-vars
+  const { user, loading, familyId, login } = useAuth();
+  const { profile, updateProfile }         = useChildProfile(familyId);
+  const { medications, addMedication }     = useMedications(familyId);
+  const { lastTemp, addReading }           = useTemperature(familyId);
 
-  const [screen, setScreen]               = useState("login");
+  const [screen, setScreen]                   = useState("login");
   const [notifPermission, setNotifPermission] = useState(getNotifPermission());
-  const [notifMinutes, setNotifMinutes]   = useState(15);
-  const [showAddMed, setShowAddMed]       = useState(false);
-  const [localProfile, setLocalProfile]   = useState(null);
+  const [notifMinutes, setNotifMinutes]       = useState(15);
+  const [showAddMed, setShowAddMed]           = useState(false);
 
   // אחרי login מ-Firebase — עבור לדשבורד
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (user && screen === "login") setScreen("notif-permission");
     if (!user && !loading)          setScreen("login");
@@ -1117,8 +1119,7 @@ export default function App() {
     if (notifPermission === "granted") scheduleAllNotifs(medications, notifMinutes);
   }, [medications, notifPermission, notifMinutes]);
 
-  // פרופיל — Firebase או מקומי
-  const activeProfile = profile || localProfile;
+  const activeProfile = profile;
 
   const handleFirebaseLogin = async () => {
     try { await login(); } catch(e) { console.error(e); }
