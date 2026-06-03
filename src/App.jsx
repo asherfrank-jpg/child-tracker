@@ -1119,6 +1119,13 @@ useEffect(() => {
   if (!user && !loading) setScreen("login");
 }, [user, loading, screen]); // eslint-disable-line react-hooks/exhaustive-deps
 
+// אחרי הרשאת התראות — בדוק אם פרופיל קיים
+useEffect(() => {
+  if (screen === "dashboard" && profile && !profile.childName) {
+    setScreen("profile-setup");
+  }
+}, [screen, profile]);
+
   useEffect(() => {
     if (notifPermission === "granted") scheduleAllNotifs(medications, notifMinutes);
   }, [medications, notifPermission, notifMinutes]);
@@ -1165,6 +1172,19 @@ const handleFirebaseLogin = async () => {
 
       {screen==="notif-permission" && (
         <NotifPermissionScreen
+        {screen==="profile-setup" && (
+  <LoginScreen
+    onDone={async (p) => {
+      await updateProfile({
+        childName:   p.name,
+        childGender: p.gender,
+        childAvatar: p.avatar,
+      });
+      setScreen("dashboard");
+    }}
+    isProfileSetup={true}
+  />
+)}
           onDone={(perm) => { setNotifPermission(perm); setScreen("dashboard"); }}
         />
       )}
