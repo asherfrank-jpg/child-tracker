@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuth, useChildProfile, useMedications, useTemperature } from "./firebase-hooks";
-
+import { initPushNotifications } from "./firebase-config";
 // ─────────────────────────────────────────
 // THEME & CONSTANTS
 // ─────────────────────────────────────────
@@ -1121,9 +1121,12 @@ export default function App() {
 
   const activeProfile = profile;
 
-  const handleFirebaseLogin = async () => {
-    try { await login(); } catch(e) { console.error(e); }
-  };
+const handleFirebaseLogin = async () => {
+  try { 
+    await login();
+    await initPushNotifications();
+  } catch(e) { console.error(e); }
+};
 
   const handleSetMedications = (updater) => {
     // עם Firebase — כל שינוי נכתב ישירות ל-Firestore
