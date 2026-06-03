@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuth, useChildProfile, useMedications, useTemperature } from "./firebase-hooks";
+import { auth } from "./firebase-config";
 import { initPushNotifications } from "./firebase-config";
 // ─────────────────────────────────────────
 // THEME & CONSTANTS
@@ -1206,6 +1207,9 @@ const handleFirebaseLogin = async () => {
             />
           )}
           <BottomNav screen={screen} setScreen={setScreen} />
+<button onClick={() => { auth.signOut(); }} style={{ position:"fixed", top:10, left:10, zIndex:999, background:"red", color:"white", border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, cursor:"pointer" }}>
+  יציאה
+</button>
           {showAddMed && (
             <AddMedModal
               onAdd={handleAddMed}
