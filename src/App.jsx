@@ -1110,24 +1110,24 @@ export default function App() {
 
   // אחרי login מ-Firebase — עבור לדשבורד
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (user && screen === "login") setScreen("notif-permission");
-    if (!user && !loading)          setScreen("login");
-  }, [user, loading, screen]); // eslint-disable-line react-hooks/exhaustive-deps
+useEffect(() => {
+  if (user && screen === "login") {
+    initPushNotifications();
+    setScreen("notif-permission");
+  }
+  if (!user && !loading) setScreen("login");
+}, [user, loading, screen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (notifPermission === "granted") scheduleAllNotifs(medications, notifMinutes);
   }, [medications, notifPermission, notifMinutes]);
 
   const activeProfile = profile;
-
 const handleFirebaseLogin = async () => {
   try { 
     await login();
-    await initPushNotifications();
   } catch(e) { console.error(e); }
 };
-
   const handleSetMedications = (updater) => {
     // עם Firebase — כל שינוי נכתב ישירות ל-Firestore
     // לא צריך setState מקומי
