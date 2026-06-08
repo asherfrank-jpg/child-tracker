@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuth, useChildProfile, useMedications, useTemperature } from "./firebase-hooks";
-import { auth, initPushNotifications } from "./firebase-config";
 
 // ─────────────────────────────────────────
 // THEME & CONSTANTS
@@ -718,7 +717,7 @@ function SettingsScreen({ profile, setProfile, notifPermission, notifMinutes, se
         <EditSettingsField
           field={{ ...fields[editField], key: editField }}
           profile={profile}
-          onSave={val => { setProfile(p=>({...p,[editField]:val})); setEditField(null); }}
+          onSave={val => { setProfile({ [editField]: val }); setEditField(null); }}
           onClose={() => setEditField(null)}
         />
       )}
@@ -1127,7 +1126,14 @@ export default function App() {
     if (notifPermission === "granted") scheduleAllNotifs(medications, notifMinutes);
   }, [medications, notifPermission, notifMinutes]);
 
-  const activeProfile = profile;
+  const activeProfile = profile ? {
+    ...profile,
+    name:   profile.childName   || "",
+    gender: profile.childGender || "",
+    avatar: profile.childAvatar || "🧒",
+    age:    profile.childAge    || "",
+    weight: profile.childWeight || "",
+  } : null;
 
   const handleFirebaseLogin = async () => {
     try { await login(); } catch(e) { console.error(e); }
@@ -1143,8 +1149,14 @@ export default function App() {
     try { await addReading(value, method, (user && user.displayName) || "הורה", note); } catch(e) { console.error(e); }
   };
 
+  // ממיר name/age/weight חזרה ל-childName/childAge/childWeight של Firebase
   const handleUpdateProfile = async (data) => {
-    try { await updateProfile(data); } catch(e) { console.error(e); }
+    const map = { name:"childName", gender:"childGender", avatar:"childAvatar", age:"childAge", weight:"childWeight" };
+    const firebaseData = {};
+    for (const key in data) {
+      firebaseData[map[key] || key] = data[key];
+    }
+    try { await updateProfile(firebaseData); } catch(e) { console.error(e); }
   };
 
   if (loading) return (
