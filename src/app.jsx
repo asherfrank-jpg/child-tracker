@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuth, useChildProfile, useMedications, useTemperature } from "./firebase-hooks";
+import { auth, initPushNotifications } from "./firebase-config";
 
 // ─────────────────────────────────────────
 // THEME & CONSTANTS
