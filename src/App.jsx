@@ -221,8 +221,8 @@ function NotifPermissionScreen({ onDone }) {
 // ─────────────────────────────────────────
 // SCREEN: LOGIN
 // ─────────────────────────────────────────
-function LoginScreen({ onDone }) {
-  const [step, setStep] = useState("landing");
+function LoginScreen({ onDone, isProfileSetup }) {
+  const [step, setStep] = useState(isProfileSetup ? "profile" : "landing");
   const [name, setName] = useState("");
   const [gender, setGender] = useState(null);
   const [avatar, setAvatar] = useState("🧒");
