@@ -1171,8 +1171,24 @@ const handleFirebaseLogin = async () => {
       )}
 
       {screen==="notif-permission" && (
-        <NotifPermissionScreen
-        {screen==="profile-setup" && (
+  <NotifPermissionScreen
+    onDone={(perm) => { setNotifPermission(perm); setScreen("dashboard"); }}
+  />
+)}
+
+{screen==="profile-setup" && (
+  <LoginScreen
+    onDone={async (p) => {
+      await updateProfile({
+        childName:   p.name,
+        childGender: p.gender,
+        childAvatar: p.avatar,
+      });
+      setScreen("dashboard");
+    }}
+    isProfileSetup={true}
+  />
+)}
   <LoginScreen
     onDone={async (p) => {
       await updateProfile({
